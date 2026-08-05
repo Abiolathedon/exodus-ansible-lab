@@ -1,0 +1,18 @@
+---
+# a play = which hosts to run on + the list of tasks to run
+- name: Module examples (read-only)
+  # run against the whole linux group from the inventory
+  hosts: linux
+  # do NOT gather facts automatically yet (keeps output clean for now)
+  gather_facts: false
+
+  tasks:
+    # TASK 1: the ping module
+    # 'name' is a human-readable label shown in the output.
+    - name: Example 1 - ping the hosts
+      # 'ansible.builtin.ping' is the MODULE being called.
+      # ping does NOT ping like ICMP - it checks Ansible can log in over
+      # SSH and run Python on the target. It changes nothing.
+      ansible.builtin.ping:
+
+      
