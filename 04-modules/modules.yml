@@ -15,4 +15,13 @@
       # SSH and run Python on the target. It changes nothing.
       ansible.builtin.ping:
 
-      
+    # TASK 2: the debug module
+    # 'debug' prints a message to your screen during the run.
+    # It is how you SEE things while a playbook runs. It changes nothing.
+    - name: Example 2 - print a simple message
+      ansible.builtin.debug:
+        # 'msg' is the text to print. It can be any message you choose.
+        msg: "Hello from EXODUS - this is the debug module"
+
+
+        
