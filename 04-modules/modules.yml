@@ -24,4 +24,14 @@
         msg: "Hello from EXODUS - this is the debug module"
 
 
+    # TASK 3: the setup module (gather facts)
+    # 'setup' is the MODULE that collects facts about a host:
+    # its OS, IP addresses, memory, CPU, disks, and much more.
+    # It is read-only - it only reads the system, changes nothing.
+    - name: Example 3 - gather and show a few facts
+      ansible.builtin.setup:
+        # 'filter' limits WHAT setup returns, so we don't get a huge dump.
+        # Here we ask only for facts whose name starts with 'ansible_os'.
+        filter: "ansible_os*"   
+
         
