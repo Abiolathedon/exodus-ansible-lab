@@ -45,8 +45,8 @@
         # {{ ... }} means "insert the value of this fact here".
         # ansible_facts is where setup stores everything it gathered.
         msg: >
-          Host {{ ansible_facts['hostname'] }}
-          is running {{ ansible_facts['distribution'] }}
-          {{ ansible_facts['distribution_version'] }}
+          Host {{ ansible_hostname }}
+          is running {{ ansible_distribution }}
+          {{ ansible_distribution_version }}
 
-          
+
