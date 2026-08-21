@@ -63,4 +63,13 @@
         var: ansible_facts.services
 
 
-        
+    # TASK 7: show ONE specific service now that we know its real name.
+    # We surveyed with Example 6, saw the real names, and chose one.
+    - name: Example 7 - show whether node-exporter is running
+      ansible.builtin.debug:
+        # We verified this exact key exists in the survey output.
+        msg: >
+          node-exporter on {{ ansible_hostname }}
+          is {{ ansible_facts.services['prometheus-node-exporter.service'].state }}    
+
+          
