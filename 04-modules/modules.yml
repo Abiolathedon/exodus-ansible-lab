@@ -63,13 +63,13 @@
         var: ansible_facts.services
 
 
-    # TASK 7: show ONE specific service now that we know its real name.
-    # We surveyed with Example 6, saw the real names, and chose one.
-    - name: Example 7 - show whether node-exporter is running
+    # TASK 7: show ONE specific service that exists on EVERY node.
+    # We verified via the full fleet inventory that sshd runs on all 7
+    # nodes, so referencing it by name is safe fleet-wide.
+    # (The node-exporter naming differs on 2 nodes - a real finding
+    #  logged to fix later under change management, not here.)
+    - name: Example 7 - show whether sshd is running
       ansible.builtin.debug:
-        # We verified this exact key exists in the survey output.
         msg: >
-          node-exporter on {{ ansible_hostname }}
-          is {{ ansible_facts.services['prometheus-node-exporter.service'].state }}    
-
-          
+          sshd on {{ ansible_hostname }}
+          is {{ ansible_facts.services['sshd.service'].state }}
