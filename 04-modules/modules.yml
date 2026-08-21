@@ -48,3 +48,19 @@
           {{ ansible_distribution_version }}
 
 
+    # TASK 5: the service_facts module
+    # 'service_facts' discovers every service on the host and whether
+    # it is running or stopped. Read-only - it only reads state.
+    - name: Example 5 - gather service facts
+      ansible.builtin.service_facts:
+
+    # TASK 6: display the FULL list of gathered services first,
+    # so we can SEE what actually exists before choosing any by name.
+    # 'var' prints a whole variable (here, the services dictionary).
+    - name: Example 6 - show all gathered services
+      ansible.builtin.debug:
+        # 'var' takes the NAME of a variable to dump (no {{ }} needed).
+        var: ansible_facts.services
+
+
+        
