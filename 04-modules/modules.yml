@@ -34,4 +34,19 @@
         # Here we ask only for facts whose name starts with 'ansible_os'.
         filter: "ansible_os*"   
 
-        
+
+    # TASK 4: show specific facts that were gathered above.
+    # Example 3 (setup) collected the facts; now 'debug' PRINTS the
+    # ones we care about. This shows two modules working together:
+    # setup gathers, debug displays.
+    - name: Example 4 - show specific gathered facts
+      ansible.builtin.debug:
+        # 'msg' builds a sentence using facts.
+        # {{ ... }} means "insert the value of this fact here".
+        # ansible_facts is where setup stores everything it gathered.
+        msg: >
+          Host {{ ansible_facts['hostname'] }}
+          is running {{ ansible_facts['distribution'] }}
+          {{ ansible_facts['distribution_version'] }}
+
+          
