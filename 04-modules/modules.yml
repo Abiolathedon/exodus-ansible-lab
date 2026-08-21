@@ -30,9 +30,7 @@
     # It is read-only - it only reads the system, changes nothing.
     - name: Example 3 - gather and show a few facts
       ansible.builtin.setup:
-        # 'filter' limits WHAT setup returns, so we don't get a huge dump.
-        # Here we ask only for facts whose name starts with 'ansible_os'.
-        filter: "ansible_os*"   
+         
 
 
     # TASK 4: show specific facts that were gathered above.
