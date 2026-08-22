@@ -73,3 +73,25 @@
         msg: >
           sshd on {{ ansible_hostname }}
           is {{ ansible_facts.services['sshd.service'].state }}
+
+
+    
+    # TASK 8: the package_facts module
+    # 'package_facts' discovers every software PACKAGE installed on the
+    # host (name + version). Read-only - it only reads, changes nothing.
+    - name: Example 8 - gather package facts
+      ansible.builtin.package_facts:
+
+    # TASK 9: show whether ONE known package is installed, and its version.
+    # package_facts stores results in ansible_facts.packages, keyed by
+    # package name. We check 'openssh-server' (present on every node -
+    # it provides sshd, which we already proved runs everywhere).
+    - name: Example 9 - show openssh-server package version
+      ansible.builtin.debug:
+        # .0.version = the version of the first (usually only) copy installed.
+        msg: >
+          openssh-server on {{ ansible_hostname }}
+          is version {{ ansible_facts.packages['openssh-server'].0.version }}
+
+
+          
