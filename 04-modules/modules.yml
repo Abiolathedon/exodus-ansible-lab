@@ -94,4 +94,30 @@
           is version {{ ansible_facts.packages['openssh-server'].0.version }}
 
 
-          
+
+    # ============================================================
+    # TASK 10 - run a read-only command and capture its output
+    # PATTERN: 'command' GETS the data -> 'register' CARRIES it ->
+    #          'debug' (next task) SHOWS it. Two tasks working together.
+    # ============================================================
+    - name: Example 10 - run uptime (read-only)
+      # [MODULE] ansible.builtin.command -> runs a program on the host.
+      # Here it runs 'uptime' (read-only: shows how long the host is up).
+      ansible.builtin.command: uptime
+      # [KEYWORD] register -> saves THIS task's result into a variable
+      #           we name 'uptime_result', so a later task can use it.
+      register: uptime_result
+      # [KEYWORD] changed_when -> tells Ansible whether this task "changed"
+      #           anything. 'false' = it changed nothing -> reports 'ok'.
+      #           (command marks itself 'changed' by default, so we correct it.)
+      changed_when: false
+
+    # ============================================================
+    # TASK 11 - display what Task 10 captured
+    # ============================================================
+    - name: Example 11 - show the uptime output
+      # [MODULE] ansible.builtin.debug -> prints things to the screen.
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> the text to print. Here we print the
+        #             '.stdout' field of the variable we registered.
+        msg: "{{ uptime_result.stdout }}"  
