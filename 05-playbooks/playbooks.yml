@@ -1,0 +1,25 @@
+---
+# ================================================================
+# PLAYBOOK: a file containing one or more PLAYS, run top to bottom.
+# This first play targets the whole linux group (read-only).
+# ================================================================
+
+# [START OF PLAY 1] - a play = hosts + settings + tasks
+- name: Play 1 - basic checks on all linux hosts
+  # [KEYWORD] hosts -> which hosts this play runs on (the 'linux' group).
+  hosts: linux
+  # [KEYWORD] gather_facts -> whether to auto-collect host facts first.
+  #           'false' keeps it fast; we'll turn it on when we need facts.
+  gather_facts: false
+
+  # [KEYWORD] tasks -> the ordered list of tasks for THIS play.
+  tasks:
+    # [TASK] calls one module.
+    - name: Confirm connectivity
+      # [MODULE] ansible.builtin.ping -> checks Ansible can reach + run.
+      ansible.builtin.ping:
+
+
+
+
+      
