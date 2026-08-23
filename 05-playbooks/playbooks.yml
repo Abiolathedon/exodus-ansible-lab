@@ -38,3 +38,38 @@
         # [PARAMETER] msg -> the text to print.
         msg: "This is Play 2, running only on the monitoring group"
 
+
+
+# [START OF PLAY 3] - demonstrate privilege escalation with 'become'.
+- name: Play 3 - prove root access with become (read-only)
+  # [KEYWORD] hosts -> run on platform-01 only, to keep output small.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off for speed.
+  gather_facts: false
+  # [KEYWORD] become -> escalate privileges for this play's tasks.
+  #           'true' means: run tasks as root (via sudo, per ansible.cfg).
+  become: true
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] read a root-only file to PROVE we are root.
+    - name: Read the first line of /etc/shadow (root-only file)
+      # [MODULE] ansible.builtin.command -> runs a program.
+      #          'head -n 1 /etc/shadow' reads only the first line.
+      #          This file is readable ONLY by root - so success proves
+      #          escalation worked. It reads, changes nothing.
+      ansible.builtin.command: head -n 1 /etc/shadow
+      # [KEYWORD] register -> capture the result to show it next.
+      register: shadow_line
+      # [KEYWORD] changed_when -> reading changes nothing -> report 'ok'.
+      changed_when: false
+
+    # [TASK] confirm we could read it (proves root worked).
+    - name: Confirm root access worked
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> we show only that it worked + who we ran as,
+        #             NOT the sensitive content itself.
+        msg: "Root read succeeded on {{ inventory_hostname }} - become is working"
+      
+      
