@@ -20,6 +20,21 @@
       ansible.builtin.ping:
 
 
+# [START OF PLAY 2] - a SECOND play in the same file, different target.
+# Playbooks run plays top to bottom: Play 1 finishes, then Play 2 runs.
+- name: Play 2 - checks on the monitoring group only
+  # [KEYWORD] hosts -> this play targets a DIFFERENT group: 'monitoring'.
+  #           (from your inventory - the observability/grafana nodes.)
+  hosts: monitoring
+  # [KEYWORD] gather_facts -> off again for speed.
+  gather_facts: false
 
+  # [KEYWORD] tasks -> this play's own separate task list.
+  tasks:
+    # [TASK]
+    - name: Say which play and group this is
+      # [MODULE] ansible.builtin.debug -> prints a message.
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> the text to print.
+        msg: "This is Play 2, running only on the monitoring group"
 
-      
