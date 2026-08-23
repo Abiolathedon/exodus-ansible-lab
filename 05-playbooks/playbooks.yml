@@ -72,4 +72,25 @@
         #             NOT the sensitive content itself.
         msg: "Root read succeeded on {{ inventory_hostname }} - become is working"
       
-      
+
+# [START OF PLAY 4] - demonstrate a host targeting PATTERN.
+- name: Play 4 - union pattern (monitoring OR logging)
+  # [KEYWORD] hosts -> a PATTERN, not just one group.
+  #           'monitoring:logging' = the UNION: hosts in EITHER group.
+  #           ':' between groups means OR (combine them).
+  hosts: monitoring:logging
+  # [KEYWORD] gather_facts -> off for speed.
+  gather_facts: false
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] name each host this pattern selected, to SEE the result.
+    - name: Show that this host was selected by the pattern
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> print the host's inventory name.
+        msg: "Selected by monitoring:logging -> {{ inventory_hostname }}"
+
+
+
+        
