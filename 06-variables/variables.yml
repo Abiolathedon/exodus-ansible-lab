@@ -1,0 +1,32 @@
+---
+# ================================================================
+# CONCEPT 06 - VARIABLES
+# A variable = a named container holding a value you can reuse.
+# ================================================================
+
+# [START OF PLAY 1] - define variables at the PLAY level with 'vars'.
+- name: Play 1 - play-level variables
+  # [KEYWORD] hosts -> run on platform-01 only, to keep output small.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off; we don't need host facts here.
+  gather_facts: false
+
+  # [KEYWORD] vars -> define variables for THIS play.
+  #           Each is a name: value pair.
+  vars:
+    # a text (string) variable
+    app_name: "EXODUS Portal"
+    # a number variable
+    app_port: 8080
+    # a true/false (boolean) variable
+    app_enabled: true
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] use the variables by wrapping their names in {{ }}.
+    - name: Show the variable values
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> {{ name }} inserts a variable's value.
+        msg: "{{ app_name }} runs on port {{ app_port }} - enabled: {{ app_enabled }}"
+        
