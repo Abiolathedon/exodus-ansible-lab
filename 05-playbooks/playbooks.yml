@@ -93,4 +93,36 @@
 
 
 
-        
+# [START OF PLAY 5] - the SAME root-only read, but WITHOUT become.
+# This play is DESIGNED to fail, to prove escalation is what made
+# Play 3 succeed. We only observe the failure - nothing changes.
+- name: Play 5 - prove it fails WITHOUT become (read-only)
+  # [KEYWORD] hosts -> platform-01 only, to keep output small.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off for speed.
+  gather_facts: false
+  # [KEYWORD] become -> deliberately NOT set (defaults to false).
+  #           So this play runs as the ordinary user 'exodus-admin'.
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] try the root-only read as a NON-root user -> expect denial.
+    - name: Try to read /etc/shadow without root (expect failure)
+      # [MODULE] ansible.builtin.command -> runs the same read as Play 3.
+      ansible.builtin.command: head -n 1 /etc/shadow
+      # [KEYWORD] register -> capture the result (success OR failure).
+      register: noroot_result
+      # [KEYWORD] changed_when -> reading changes nothing -> 'ok' not 'changed'.
+      changed_when: false
+      # [KEYWORD] ignore_errors -> this failure is EXPECTED; don't stop
+      #           the playbook. Let it continue so we can observe it.
+      ignore_errors: true
+
+    # [TASK] report what happened, whichever way it went.
+    - name: Report the outcome
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> print the FAILURE flag and the error message.
+        #             noroot_result.failed is true/false;
+        #             .msg holds the error text (if any).
+        msg: "failed = {{ noroot_result.failed }} | reason = {{ noroot_result.msg | default('no error') }}"
