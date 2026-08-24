@@ -30,3 +30,39 @@
         # [PARAMETER] msg -> {{ name }} inserts a variable's value.
         msg: "{{ app_name }} runs on port {{ app_port }} - enabled: {{ app_enabled }}"
         
+
+# [START OF PLAY 2] - load variables from a SEPARATE file.
+- name: Play 2 - variables from an external file
+  # [KEYWORD] hosts -> platform-01 only, small output.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off; not needed.
+  gather_facts: false
+
+  # [KEYWORD] vars_files -> load variables from external file(s).
+  #           This pulls in everything defined in app_vars.yml.
+  vars_files:
+    - app_vars.yml
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] use the values that came from the file.
+    - name: Show database settings from the file
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> variables loaded from app_vars.yml.
+        msg: "DB {{ db_name }} at {{ db_host }}:{{ db_port }}"
+
+    # [TASK] show the whole list variable.
+    - name: Show the allowed environments list
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] var -> dump a whole variable (here, the list).
+        var: allowed_environments
+
+    # [TASK] pick ONE item out of the list by its position.
+    - name: Show just the first environment
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> list items are numbered from 0.
+        #             [0] = first item, [1] = second, etc.
+        msg: "First environment is {{ allowed_environments[0] }}"

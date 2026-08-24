@@ -1,0 +1,18 @@
+---
+# ================================================================
+# A VARIABLES FILE - holds ONLY variables (name: value pairs).
+# No plays, no tasks. Just data, to be loaded by a playbook.
+# ================================================================
+
+# database connection settings
+db_host: "exodus-services-01"
+db_port: 5432
+db_name: "exodus_portal"
+
+# a list (multiple values under one name)
+allowed_environments:
+  - development
+  - staging
+  - production
+
+  
