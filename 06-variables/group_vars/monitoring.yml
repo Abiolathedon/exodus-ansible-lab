@@ -1,0 +1,18 @@
+---
+# ================================================================
+# group_vars/monitoring.yml
+# Ansible AUTO-LOADS this for every host in the 'monitoring' group.
+# The FILENAME (monitoring) matches the GROUP name - that is the link.
+# No 'vars_files:' line needed anywhere. Convention does it.
+# ================================================================
+
+# a variable that describes this group's role
+monitoring_role: "Prometheus and Grafana monitoring stack"
+
+# the port Prometheus listens on
+prometheus_port: 9090
+
+# the port Grafana listens on
+grafana_port: 3000
+
+

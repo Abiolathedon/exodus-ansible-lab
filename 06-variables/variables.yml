@@ -66,3 +66,28 @@
         # [PARAMETER] msg -> list items are numbered from 0.
         #             [0] = first item, [1] = second, etc.
         msg: "First environment is {{ allowed_environments[0] }}"
+
+
+
+# [START OF PLAY 3] - use group_vars WITHOUT loading them manually.
+# Note: there is NO 'vars:' and NO 'vars_files:' here.
+# Ansible auto-loads group_vars/monitoring.yml because this play
+# targets the 'monitoring' group and the filename matches.
+- name: Play 3 - automatic group_vars for the monitoring group
+  # [KEYWORD] hosts -> the 'monitoring' group (observability + grafana).
+  #           This membership is what triggers the auto-load.
+  hosts: monitoring
+  # [KEYWORD] gather_facts -> off; not needed.
+  gather_facts: false
+
+  # [KEYWORD] tasks  (notice: no vars section at all!)
+  tasks:
+    # [TASK] use variables that arrived AUTOMATICALLY from group_vars.
+    - name: Show the auto-loaded group variables
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> these came from group_vars/monitoring.yml
+        #             with no vars_files line - purely by group name.
+        msg: "{{ inventory_hostname }} | role: {{ monitoring_role }} | prometheus:{{ prometheus_port }} grafana:{{ grafana_port }}"
+
+        
