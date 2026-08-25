@@ -110,4 +110,24 @@
         # [PARAMETER] msg -> these came from the 'logging' cupboard.
         msg: "{{ inventory_hostname }} | role: {{ logging_role }} | opensearch:{{ opensearch_port }} | keep logs {{ log_retention_days }} days"
 
+
+
+# [START OF PLAY 5] - the 'all' cupboard reaches EVERY host.
+# No vars, no vars_files. Targeting 'all' auto-loads group_vars/all.yml
+# for every server in the inventory.
+- name: Play 5 - fleet-wide variables from group_vars/all.yml
+  # [KEYWORD] hosts -> 'all' = every host in the inventory.
+  hosts: all
+  # [KEYWORD] gather_facts -> off; not needed.
+  gather_facts: false
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] show the fleet-wide values on every node.
+    - name: Show the fleet-wide variables
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> these came from the 'all' cupboard,
+        #             so EVERY host should print them.
+        msg: "{{ inventory_hostname }} | {{ company_name }} | {{ environment_tier }} | contact {{ admin_contact }}"
         

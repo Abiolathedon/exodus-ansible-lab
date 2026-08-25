@@ -1,0 +1,16 @@
+---
+# ================================================================
+# group_vars/all.yml
+# The WHOLE-FLEET cupboard. 'all' is the special group meaning
+# EVERY host in the inventory. Applied everywhere, automatically.
+# Use it for values every server should share.
+# ================================================================
+
+# the company that owns the fleet
+company_name: "EXODUS"
+
+# the environment this fleet represents
+environment_tier: "production-lab"
+
+# a standard admin contact for all servers
+admin_contact: "devclouduk@gmail.com" 
