@@ -1,0 +1,16 @@
+---
+# ================================================================
+# group_vars/logging.yml
+# The cupboard labelled "logging".
+# Auto-applied to every host in the 'logging' group (logging-01).
+# Different group -> different cupboard -> different values.
+# ================================================================
+
+# what this group does
+logging_role: "OpenSearch central logging stack"
+
+# the port OpenSearch listens on
+opensearch_port: 9200
+
+# how many days we keep logs
+log_retention_days: 30 
