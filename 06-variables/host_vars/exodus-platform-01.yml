@@ -1,0 +1,16 @@
+---
+# ================================================================
+# host_vars/exodus-platform-01.yml
+# The PERSONAL LOCKER for ONE host: exodus-platform-01.
+# Auto-applied to that host ONLY. The filename matches the host name.
+# No load line needed - convention does it, exactly like group_vars.
+# ================================================================
+
+# a value unique to this one server
+server_purpose: "Core platform services node"
+
+# this host's specific role in the fleet
+node_rank: "primary-core"
+
+# a per-host setting nobody else should have
+maintenance_window: "Sunday 02:00-04:00"  

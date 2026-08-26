@@ -130,4 +130,26 @@
         # [PARAMETER] msg -> these came from the 'all' cupboard,
         #             so EVERY host should print them.
         msg: "{{ inventory_hostname }} | {{ company_name }} | {{ environment_tier }} | contact {{ admin_contact }}"
+
+
+
+# [START OF PLAY 6] - use host_vars for ONE specific host.
+# No vars, no vars_files. Targeting exodus-platform-01 auto-loads
+# host_vars/exodus-platform-01.yml (that host's personal locker).
+- name: Play 6 - automatic host_vars for platform-01
+  # [KEYWORD] hosts -> just this one host by name.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off; not needed.
+  gather_facts: false
+
+  # [KEYWORD] tasks  (again: no vars section)
+  tasks:
+    # [TASK] use variables auto-loaded from this host's locker.
+    - name: Show the auto-loaded host variables
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> these came from host_vars/exodus-platform-01.yml
+        #             purely because the filename matches the host name.
+        msg: "{{ inventory_hostname }} | {{ server_purpose }} | rank: {{ node_rank }} | window: {{ maintenance_window }}"
+
         
