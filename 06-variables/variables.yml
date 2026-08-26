@@ -152,4 +152,27 @@
         #             purely because the filename matches the host name.
         msg: "{{ inventory_hostname }} | {{ server_purpose }} | rank: {{ node_rank }} | window: {{ maintenance_window }}"
 
+
+
+# [START OF PLAY 7] - PRECEDENCE PROOF.
+# environment_tier is defined in TWO places:
+#   - group_vars/all.yml            -> "production-lab"   (every host)
+#   - host_vars/exodus-platform-01.yml -> "platform-01-SPECIAL" (that host)
+# Run on ALL hosts and print it. Watch which value each host shows.
+- name: Play 7 - which value wins? (precedence)
+  # [KEYWORD] hosts -> every host, so we can compare platform-01 vs the rest.
+  hosts: all
+  # [KEYWORD] gather_facts -> off; not needed.
+  gather_facts: false
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] print environment_tier on every host.
+    - name: Show environment_tier on each host
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> same variable name on every host, but
+        #             platform-01 also has a host_vars override.
+        msg: "{{ inventory_hostname }} -> environment_tier = {{ environment_tier }}"
+
         

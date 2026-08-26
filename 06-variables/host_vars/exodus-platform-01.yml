@@ -14,3 +14,12 @@ node_rank: "primary-core"
 
 # a per-host setting nobody else should have
 maintenance_window: "Sunday 02:00-04:00"  
+
+
+
+# --- PRECEDENCE DEMO ---
+# This SAME variable name also exists in group_vars/all.yml
+# (there it is "production-lab", applying to EVERY host).
+# Here we set it for platform-01 ONLY. host_vars beats group_vars/all,
+# so THIS value should win on platform-01.
+environment_tier: "platform-01-SPECIAL"  
