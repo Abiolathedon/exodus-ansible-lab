@@ -26,3 +26,34 @@
         - apple
         - banana
         - cherry
+
+
+# [START OF PLAY 2] - loop over a list held in a VARIABLE.
+# More realistic: the list is data (a variable), not hardcoded in the task.
+- name: Play 2 - loop over a variable
+  # [KEYWORD] hosts -> platform-01 only.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off.
+  gather_facts: false
+
+  # [KEYWORD] vars -> define the list ONCE as data.
+  vars:
+    # a list variable (same shape as lists you made in Concept 06)
+    fleet_services:
+      - sshd
+      - chronyd
+      - firewalld
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] loop over the VARIABLE instead of a hardcoded list.
+    - name: Print each service name from the variable
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> {{ item }} is the current service each pass.
+        msg: "Service to check: {{ item }}"
+      # [KEYWORD] loop -> point at the VARIABLE (wrapped in {{ }}).
+      #           The task runs once per item in fleet_services.
+      loop: "{{ fleet_services }}"
+
+      
