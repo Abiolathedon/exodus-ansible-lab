@@ -56,4 +56,40 @@
       #           The task runs once per item in fleet_services.
       loop: "{{ fleet_services }}"
 
+
+
+# [START OF PLAY 3] - loop over a list of DICTIONARIES (structured items).
+# Each item is not a single value, but a record with several fields.
+- name: Play 3 - loop over dictionaries
+  # [KEYWORD] hosts -> platform-01 only.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off.
+  gather_facts: false
+
+  # [KEYWORD] vars
+  vars:
+    # a list where EACH item is a dictionary (has 'name' and 'port').
+    services_info:
+      # item 1: a dictionary with two fields
+      - name: prometheus
+        port: 9090
+      # item 2
+      - name: grafana
+        port: 3000
+      # item 3
+      - name: opensearch
+        port: 9200
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] loop over the dictionaries; access each field by its key.
+    - name: Print each service and its port
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> item.name and item.port pull the FIELDS
+        #             out of the current dictionary each pass.
+        msg: "Service {{ item.name }} listens on port {{ item.port }}"
+      # [KEYWORD] loop -> the list of dictionaries.
+      loop: "{{ services_info }}"     
+
       
