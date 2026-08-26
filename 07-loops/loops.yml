@@ -92,4 +92,42 @@
       # [KEYWORD] loop -> the list of dictionaries.
       loop: "{{ services_info }}"     
 
-      
+
+
+# [START OF PLAY 4] - loop + register: capture EACH iteration's result.
+- name: Play 4 - loop with register
+  # [KEYWORD] hosts -> platform-01 only.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off.
+  gather_facts: false
+
+  # [KEYWORD] vars
+  vars:
+    # a list of small read-only commands to run.
+    commands_to_run:
+      - whoami
+      - hostname
+      - pwd
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK 1] run each command in the list, capturing every result.
+    - name: Run each read-only command
+      # [MODULE] ansible.builtin.command -> runs the current command.
+      ansible.builtin.command: "{{ item }}"
+      # [KEYWORD] loop -> run the task once per command.
+      loop: "{{ commands_to_run }}"
+      # [KEYWORD] register -> capture ALL iterations into 'command_output'.
+      #           Because this loops, results land in command_output.results
+      register: command_output
+      # [KEYWORD] changed_when -> these are read-only -> report 'ok'.
+      changed_when: false
+
+    # [TASK 2] loop over the CAPTURED results and print each one.
+    - name: Show each command's output
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> item.item = which command; item.stdout = its output.
+        msg: "'{{ item.item }}' returned: {{ item.stdout }}"
+      # [KEYWORD] loop -> loop over the .results list captured above.
+      loop: "{{ command_output.results }}"
