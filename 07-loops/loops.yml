@@ -1,0 +1,28 @@
+---
+# ================================================================
+# CONCEPT 07 - LOOPS
+# A loop repeats ONE task once for EACH item in a list.
+# The current item is available as the special variable 'item'.
+# ================================================================
+
+# [START OF PLAY 1] - a simple loop over a list of text values.
+- name: Play 1 - basic loop
+  # [KEYWORD] hosts -> platform-01 only, to keep output small.
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off; not needed.
+  gather_facts: false
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] print a message once per list item.
+    - name: Print each fruit
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        # [PARAMETER] msg -> {{ item }} is the CURRENT list item on each pass.
+        msg: "Current fruit is {{ item }}"
+      # [KEYWORD] loop -> the list to repeat the task over.
+      #           The task runs once for EACH value here.
+      loop:
+        - apple
+        - banana
+        - cherry
