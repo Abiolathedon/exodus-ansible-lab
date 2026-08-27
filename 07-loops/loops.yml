@@ -131,3 +131,9 @@
         msg: "'{{ item.item }}' returned: {{ item.stdout }}"
       # [KEYWORD] loop -> loop over the .results list captured above.
       loop: "{{ command_output.results }}"
+      # [KEYWORD] loop_control -> options that control how the loop DISPLAYS.
+      loop_control:
+        # [PARAMETER] label -> in the (item=...) line, show ONLY this short
+        #             value (the command), not the whole result object.
+        label: "{{ item.item }}"
+
