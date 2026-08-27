@@ -28,4 +28,11 @@
         #             If already installed -> no change. If missing -> install.
         state: present
 
-        
+
+    - name: Ensure htop is installed
+      # [MODULE] ansible.builtin.dnf -> RHEL package manager.
+      ansible.builtin.dnf:
+        # [PARAMETER] name -> the package (htop, verified absent right now).
+        name: htop
+        # [PARAMETER] state -> present = "make sure it IS installed".
+        state: present    
