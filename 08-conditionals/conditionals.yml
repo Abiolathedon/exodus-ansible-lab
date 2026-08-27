@@ -37,4 +37,37 @@
       # [KEYWORD] when -> condition: is this host in the logging group?
       when: "'logging' in group_names"
 
-      
+
+
+# [START OF PLAY 2] - conditional based on the host's OPERATING SYSTEM (fact).
+- name: Play 2 - run different tasks depending on the OS
+  # SAFE (learning): the whole linux group (all our nodes are RHEL,
+  # so the RHEL task runs and the Ubuntu task skips everywhere).
+  hosts: linux
+  # FLEET-WIDE / other targets (real use - uncomment when you mean it):
+  # hosts: all
+  # hosts: exodus-platform-01
+
+  # [KEYWORD] gather_facts -> TRUE this time. We NEED facts because the
+  #           condition below tests 'ansible_distribution' (the OS name),
+  #           which only exists if facts are gathered.
+  gather_facts: true
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] runs ONLY on Red Hat / RHEL hosts.
+    - name: Task for RHEL-family hosts
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is RHEL ({{ ansible_distribution }} {{ ansible_distribution_major_version }}) - would use dnf"
+      # [KEYWORD] when -> condition: is the OS Red Hat family?
+      #           'ansible_distribution' is a FACT (the OS name, e.g. 'RedHat').
+      when: ansible_distribution == "RedHat"
+
+    # [TASK] runs ONLY on Ubuntu hosts (none in our fleet -> will skip).
+    - name: Task for Ubuntu hosts
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is Ubuntu - would use apt"
+      # [KEYWORD] when -> condition: is the OS Ubuntu?
+      when: ansible_distribution == "Ubuntu"
