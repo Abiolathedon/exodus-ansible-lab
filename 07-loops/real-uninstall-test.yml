@@ -1,0 +1,39 @@
+---
+# ================================================================
+# REAL STATE-CHANGING TEST - UNINSTALL playbook.
+# Removes the tree and htop test packages from platform-01,
+# returning the node to its original pre-snapshot state.
+# Counterpart to real-install-test.yml (which installs them).
+# GUARDRAILS: one node (platform-01), snapshot taken.
+# This WILL change the system - expect 'changed=1' (removals).
+# ================================================================
+
+# [START OF PLAY] - remove the test packages from ONE node.
+- name: Remove tree and htop from platform-01
+  # [KEYWORD] hosts -> platform-01 only (we also use --limit as a backstop).
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off; the package module doesn't need facts.
+  gather_facts: false
+  # [KEYWORD] become -> TRUE. Removing software needs root privileges.
+  become: true
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] remove the 'tree' package.
+    - name: Ensure tree is removed
+      # [MODULE] ansible.builtin.dnf -> the RHEL package manager.
+      ansible.builtin.dnf:
+        # [PARAMETER] name -> which package to act on.
+        name: tree
+        # [PARAMETER] state -> 'absent' = "make sure it is NOT installed".
+        #             If installed -> remove it. If already gone -> no change.
+        state: absent
+
+    # [TASK] remove the 'htop' package.
+    - name: Ensure htop is removed
+      # [MODULE] ansible.builtin.dnf -> the RHEL package manager.
+      ansible.builtin.dnf:
+        # [PARAMETER] name -> the package to remove.
+        name: htop
+        # [PARAMETER] state -> absent = "make sure it is NOT installed".
+        state: absent
