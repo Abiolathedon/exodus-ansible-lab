@@ -1,0 +1,31 @@
+---
+# ================================================================
+# REAL STATE-CHANGING TEST - install the 'tree' package.
+# GUARDRAILS: one node (platform-01), harmless package, snapshot taken.
+# This WILL change the system - expect 'changed=1' (not changed=0).
+# ================================================================
+
+# [START OF PLAY] - install a harmless package on ONE node.
+- name: Real test - install tree on platform-01
+  # [KEYWORD] hosts -> platform-01 only (we also use --limit as a backstop).
+  hosts: exodus-platform-01
+  # [KEYWORD] gather_facts -> off; the package module doesn't need facts.
+  gather_facts: false
+  # [KEYWORD] become -> TRUE. Installing software needs root privileges.
+  #           (This is the first time we NEED become for a real reason.)
+  become: true
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] install the 'tree' package.
+    - name: Ensure tree is installed
+      # [MODULE] ansible.builtin.dnf -> the package manager for RHEL.
+      #          (dnf = the RHEL 9 tool that installs/removes software.)
+      ansible.builtin.dnf:
+        # [PARAMETER] name -> which package to act on.
+        name: tree
+        # [PARAMETER] state -> 'present' means "make sure it IS installed".
+        #             If already installed -> no change. If missing -> install.
+        state: present
+
+        
