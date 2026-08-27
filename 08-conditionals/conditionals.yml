@@ -1,0 +1,40 @@
+---
+# ================================================================
+# CONCEPT 08 - CONDITIONALS
+# 'when:' runs a task ONLY IF a condition is true.
+# If false, the task is SKIPPED (you'll see 'skipping:').
+# ================================================================
+
+# [START OF PLAY 1] - conditional based on GROUP MEMBERSHIP (real use).
+- name: Play 1 - run a task only on hosts in a specific group
+  # SAFE (learning): target the whole linux group so we can SEE which
+  # hosts match the condition and which get skipped.
+  hosts: linux
+  # FLEET-WIDE / other targets (real use - uncomment when you mean it):
+  # hosts: all
+  # hosts: monitoring
+  # hosts: exodus-platform-01
+
+  # [KEYWORD] gather_facts -> off; group_names doesn't need facts.
+  gather_facts: false
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] runs ONLY on hosts that are in the 'monitoring' group.
+    - name: Announce monitoring role
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is a MONITORING node"
+      # [KEYWORD] when -> condition: is this host in the monitoring group?
+      #           'group_names' is a built-in list of groups the host belongs to.
+      when: "'monitoring' in group_names"
+
+    # [TASK] runs ONLY on hosts that are in the 'logging' group.
+    - name: Announce logging role
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is a LOGGING node"
+      # [KEYWORD] when -> condition: is this host in the logging group?
+      when: "'logging' in group_names"
+
+      
