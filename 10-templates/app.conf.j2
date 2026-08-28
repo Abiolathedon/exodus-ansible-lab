@@ -1,17 +1,16 @@
 # ================================================================
 # EXODUS monitoring agent config - generated from a template.
-# Lines with {{ }} are BLANKS that Ansible fills in per host.
+# Lines with double-curly-braces are BLANKS filled in per host.
 # ================================================================
 
 # --- identity of THIS server (filled in per host) ---
-# {{ inventory_hostname }} = the server's name from the inventory
+# hostname = the server's name from the inventory
 hostname = {{ inventory_hostname }}
 
-# {{ ansible_default_ipv4.address }} = this server's real IP address (a fact)
+# ip_address = this server's real IP address (a fact)
 ip_address = {{ ansible_default_ipv4.address }}
 
 # --- settings that are the SAME on every host (from a variable) ---
-# {{ metrics_port }} = a variable we define in the playbook
+# metrics_port and environment come from variables in the playbook
 metrics_port = {{ metrics_port }}
 environment = {{ deploy_environment }}
-
