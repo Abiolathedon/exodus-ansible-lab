@@ -1,0 +1,55 @@
+---
+# ================================================================
+# CONCEPT 09 - HANDLERS (real pattern, safe target)
+# Real scenario: manage a config file. When the file CHANGES,
+# notify a handler that "reloads the service".
+# Safe: the file lives in /tmp (a scratch folder), and the handler
+# prints instead of restarting a real service. Mechanism is identical
+# to production - swap 2 lines (shown below) for the real version.
+# ================================================================
+
+# [START OF PLAY 1] - config change notifies a reload handler.
+- name: Play 1 - reload only when the config file changes
+  # SAFE (learning): platform-01 only.
+  hosts: exodus-platform-01
+  # FLEET-WIDE / other targets (real use - uncomment when you mean it):
+  # hosts: linux
+  # hosts: all
+
+  # [KEYWORD] gather_facts -> off; not needed.
+  gather_facts: false
+  # [KEYWORD] become -> TRUE; managing config files needs root in real use.
+  become: true
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] make sure the config file has EXACTLY this content.
+    #        If the file is missing or different -> copy CHANGES it -> notifies.
+    #        If the file already matches -> copy does nothing -> no notify.
+    - name: Manage the app config file
+      # [MODULE] ansible.builtin.copy -> ensures a file has given content.
+      ansible.builtin.copy:
+        # [PARAMETER] dest -> where the file lives.
+        #   REAL VERSION: dest would be e.g. /etc/myapp/myapp.conf
+        dest: /tmp/exodus-app.conf
+        # [PARAMETER] content -> the exact contents we want the file to have.
+        content: |
+          # EXODUS app configuration
+          max_connections = 100
+          log_level = info
+        # [PARAMETER] mode -> permissions (owner read+write, group/others read).
+        mode: "0644"
+      # [KEYWORD] notify -> IF copy changed the file, wake the handler by name.
+      notify: Reload the app service
+
+  # [KEYWORD] handlers -> tasks that WAIT, and run only when notified.
+  handlers:
+    # [HANDLER] the name here must EXACTLY match the notify: above.
+    - name: Reload the app service
+      # [MODULE] ansible.builtin.debug -> stands in for a real reload.
+      #   REAL VERSION would be:
+      #     ansible.builtin.service:
+      #       name: myapp
+      #       state: reloaded
+      ansible.builtin.debug:
+        msg: "HANDLER: config changed -> reloading the app service now"
