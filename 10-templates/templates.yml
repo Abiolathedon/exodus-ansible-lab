@@ -1,0 +1,54 @@
+---
+# ================================================================
+# CONCEPT 10 - TEMPLATES
+# Take ONE template file (app.conf.j2), fill in each host's blanks,
+# and write a finished, personalised config file to each server.
+# Pairs with handlers: if the config changes -> notify -> reload.
+# ================================================================
+
+# [START OF PLAY 1] - generate a per-host config from a template.
+- name: Play 1 - render the monitoring config from a template
+  # SAFE (learning): all linux nodes, so we SEE different output per host.
+  hosts: linux
+  # FLEET-WIDE / other targets (real use - uncomment when you mean it):
+  # hosts: all
+  # hosts: monitoring
+
+  # [KEYWORD] gather_facts -> TRUE. The template uses a FACT
+  #           (ansible_default_ipv4.address), so facts must be gathered.
+  gather_facts: true
+  # [KEYWORD] become -> TRUE; writing config files needs root in real use.
+  become: true
+
+  # [KEYWORD] vars -> the SHARED values (same on every host).
+  vars:
+    # these fill the blanks that are identical fleet-wide
+    metrics_port: 9100
+    deploy_environment: "production-lab"
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] run the template module: fill blanks -> write the file.
+    - name: Render app.conf from the template
+      # [MODULE] ansible.builtin.template -> the mail-merge machine.
+      #          Reads the .j2, fills {{ }} per host, writes the result.
+      ansible.builtin.template:
+        # [PARAMETER] src -> the template file (the "master letter").
+        #             Path is relative to the playbook's folder.
+        src: app.conf.j2
+        # [PARAMETER] dest -> where to write the FINISHED file on each host.
+        #             REAL VERSION: /etc/telegraf/telegraf.conf (or similar).
+        dest: /tmp/exodus-app.conf
+        # [PARAMETER] mode -> permissions on the finished file.
+        mode: "0644"
+      # [KEYWORD] notify -> if the rendered file CHANGED, wake the handler.
+      notify: Reload monitoring agent
+
+  # [KEYWORD] handlers -> reacts only when the config actually changed.
+  handlers:
+    # [HANDLER] name must EXACTLY match the notify: above.
+    - name: Reload monitoring agent
+      # [MODULE] ansible.builtin.debug -> stands in for a real reload.
+      #          REAL VERSION: service: name=telegraf state=reloaded
+      ansible.builtin.debug:
+        msg: "HANDLER: monitoring config changed -> reloading agent"
