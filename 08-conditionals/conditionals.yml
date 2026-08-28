@@ -73,7 +73,7 @@
       when: ansible_distribution == "Ubuntu"
 
   
-  # [START OF PLAY 3] - combine conditions with 'and' / 'or'.
+# [START OF PLAY 3] - combine conditions with 'and' / 'or'.
 - name: Play 3 - multiple conditions
   # SAFE (learning): the whole linux group so we can see the mix.
   hosts: linux
@@ -103,3 +103,48 @@
         msg: "{{ inventory_hostname }} is a monitoring OR logging node"
       # [KEYWORD] when -> use 'or' inside ONE expression for either-true.
       when: "'monitoring' in group_names or 'logging' in group_names"
+
+
+
+# [START OF PLAY 4] - check something, then act on the RESULT.
+- name: Play 4 - conditional based on a registered result
+  # SAFE (learning): platform-01 only, to keep output small.
+  hosts: exodus-platform-01
+  # FLEET-WIDE / other targets (real use - uncomment when you mean it):
+  # hosts: linux
+  # hosts: all
+
+  # [KEYWORD] gather_facts -> off; we don't need facts here.
+  gather_facts: false
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK 1] CHECK: is the 'sshd' service present? (read-only check)
+    - name: Check if sshd is installed
+      # [MODULE] ansible.builtin.command -> run a read-only check.
+      #          'systemctl status sshd' returns rc=0 if it exists/runs.
+      ansible.builtin.command: systemctl status sshd
+      # [KEYWORD] register -> capture the result into 'sshd_check'.
+      register: sshd_check
+      # [KEYWORD] changed_when -> a check changes nothing -> report 'ok'.
+      changed_when: false
+      # [KEYWORD] ignore_errors -> if sshd were missing, rc would be non-zero
+      #           and the task would fail; ignore it so we can react instead.
+      ignore_errors: true
+
+    # [TASK 2] ACT: only announce "healthy" IF the check succeeded (rc == 0).
+    - name: Report sshd is healthy
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "sshd is present and the check passed (rc={{ sshd_check.rc }})"
+      # [KEYWORD] when -> test a FIELD of the registered result.
+      #           .rc is the return code; 0 means the check succeeded.
+      when: sshd_check.rc == 0
+
+    # [TASK 3] ACT: only warn IF the check FAILED (rc != 0).
+    - name: Warn sshd check failed
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "sshd check did NOT pass - would investigate"
+      # [KEYWORD] when -> '!=' means "not equal". Runs only if rc is NOT 0.
+      when: sshd_check.rc != 0
