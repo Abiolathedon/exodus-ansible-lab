@@ -71,3 +71,35 @@
         msg: "{{ inventory_hostname }} is Ubuntu - would use apt"
       # [KEYWORD] when -> condition: is the OS Ubuntu?
       when: ansible_distribution == "Ubuntu"
+
+  
+  # [START OF PLAY 3] - combine conditions with 'and' / 'or'.
+- name: Play 3 - multiple conditions
+  # SAFE (learning): the whole linux group so we can see the mix.
+  hosts: linux
+  # FLEET-WIDE / other targets (real use - uncomment when you mean it):
+  # hosts: all
+  # hosts: exodus-platform-01
+
+  # [KEYWORD] gather_facts -> TRUE; we test the OS fact below.
+  gather_facts: true
+
+  # [KEYWORD] tasks
+  tasks:
+    # [TASK] runs ONLY if BOTH are true: RHEL  AND  in monitoring group.
+    - name: RHEL AND monitoring
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is a RHEL monitoring node (both conditions true)"
+      # [KEYWORD] when -> a LIST of conditions = ALL must be true (implicit AND).
+      when:
+        - ansible_distribution == "RedHat"
+        - "'monitoring' in group_names"
+
+    # [TASK] runs if EITHER is true: monitoring OR logging node.
+    - name: monitoring OR logging
+      # [MODULE] ansible.builtin.debug
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is a monitoring OR logging node"
+      # [KEYWORD] when -> use 'or' inside ONE expression for either-true.
+      when: "'monitoring' in group_names or 'logging' in group_names"
