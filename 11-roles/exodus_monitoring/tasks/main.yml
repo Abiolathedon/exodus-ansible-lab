@@ -1,0 +1,21 @@
+---
+# ================================================================
+# tasks/main.yml - the to-do list for the exodus_monitoring role.
+# This is what RUNS when the role is applied.
+# Note: NO hosts/become here - the playbook that calls the role decides that.
+# ================================================================
+
+# [TASK] render the monitoring config from the role's template.
+- name: Render the monitoring config from the template
+  # [MODULE] ansible.builtin.template -> the mail-merge machine.
+  ansible.builtin.template:
+    # [PARAMETER] src -> just the filename. Ansible finds it automatically
+    #             in the role's templates/ folder (no path needed!).
+    src: app.conf.j2
+    # [PARAMETER] dest -> where to write the finished file on each host.
+    #             REAL VERSION: /etc/telegraf/telegraf.conf (or similar).
+    dest: /tmp/exodus-app.conf
+    # [PARAMETER] mode -> permissions on the finished file.
+    mode: "0644"
+  # [KEYWORD] notify -> if the file changed, wake the handler by name.
+  notify: Reload monitoring agent 

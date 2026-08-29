@@ -1,0 +1,12 @@
+---
+# ================================================================
+# defaults/main.yml - the role's FACTORY-DEFAULT variable values.
+# These fill the template's blanks unless the playbook overrides them.
+# ================================================================
+
+# the port the monitoring agent exposes its metrics on
+metrics_port: 9100
+
+# which environment these hosts belong to
+deploy_environment: "production-lab"
+

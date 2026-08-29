@@ -1,0 +1,17 @@
+---
+# ================================================================
+# handlers/main.yml - the fire brigade for the exodus_monitoring role.
+# A handler WAITS. It only runs when a task NOTIFIES it by name.
+# ================================================================
+
+# [HANDLER] its name MUST exactly match the notify: in tasks/main.yml.
+- name: Reload monitoring agent
+  # [MODULE] ansible.builtin.debug -> stands in for a real reload.
+  #          REAL VERSION would be:
+  #            ansible.builtin.service:
+  #              name: telegraf
+  #              state: reloaded
+  ansible.builtin.debug:
+    msg: "HANDLER: monitoring config changed -> reloading the agent"
+
+    

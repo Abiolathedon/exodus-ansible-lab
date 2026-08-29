@@ -1,0 +1,27 @@
+---
+# ================================================================
+# use-monitoring-role.yml - a playbook that APPLIES the role.
+# Look how SHORT this is - all the real work lives inside the role.
+# The playbook just decides WHERE (hosts) and HOW (become), then
+# says "apply the exodus_monitoring role."
+# ================================================================
+
+- name: Apply the monitoring role to the fleet
+  # [KEYWORD] hosts -> WHERE to run (the playbook decides this, not the role).
+  hosts: linux
+  # FLEET-WIDE / other targets (real use - uncomment when you mean it):
+  # hosts: all
+  # hosts: monitoring
+
+  # [KEYWORD] gather_facts -> TRUE; the role's template needs the IP fact.
+  gather_facts: true
+  # [KEYWORD] become -> TRUE; writing config needs root (playbook decides HOW).
+  become: true
+
+  # [KEYWORD] roles -> the list of roles to apply. THIS is the whole point.
+  roles:
+    # apply our role - Ansible runs its tasks/, loads its handlers/,
+    # finds its templates/, and uses its defaults/ - all automatically.
+    - exodus_monitoring
+
+    
