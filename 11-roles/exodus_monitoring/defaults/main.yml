@@ -5,7 +5,7 @@
 # ================================================================
 
 # the port the monitoring agent exposes its metrics on
-metrics_port: 9100
+metrics_port: 9200
 
 # which environment these hosts belong to
 deploy_environment: "production-lab"
